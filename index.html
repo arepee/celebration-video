@@ -1,1 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SL HUD Video</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body { height: 100%; margin: 0; background:#000; }
+    .wrap { height: 100%; display:flex; align-items:center; justify-content:center; background:#000; }
+    video { width:100%; height:100%; object-fit:contain; background:#000; }
+    .unmute { position:fixed; inset:auto 0 0 0; padding:10px; text-align:center;
+              font: 600 14px/1.2 system-ui, sans-serif; color:#fff; background:rgba(0,0,0,.35);
+              display:none; user-select:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <video id="vid" playsinline autoplay muted controls preload="metadata">
+      <!-- If the MP4 is inside the repo (≤100 MB): -->
+      <source src="./videov2.mp4" type="video/mp4">
+
+      <!-- If hosted elsewhere (recommended for big files): -->
+      <!-- <source src="https://YOUR-CDN.example.com/path/to/video.mp4" type="video/mp4"> -->
+
+      Sorry, your viewer can't play this video.
+    </video>
+  </div>
+  <div id="tip" class="unmute">Tap anywhere to unmute 🔊</div>
+
+  <script>
+    const v = document.getElementById('vid');
+    const tip = document.getElementById('tip');
+
+    // Ensure playback attempts even if autoplay policy is strict
+    function tryPlay(){ v.play().catch(()=>{}); }
+    v.addEventListener('loadeddata', tryPlay);
+    v.addEventListener('play', () => { tip.style.display = 'block'; });
+    document.addEventListener('click', () => {
+      v.muted = false; tip.style.display = 'none'; tryPlay();
+    }, { once: true });
+
+    // Optional: accept ?src=... to swap the video without editing the file
+    const q = new URLSearchParams(location.search);
+    if (q.has('src')) { v.src = q.get('src'); tryPlay(); }
+  </script>
+</body>
+</html>
 
